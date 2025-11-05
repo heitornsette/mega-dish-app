@@ -64,19 +64,22 @@ const Restaurant = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header com imagem do restaurante */}
-      <div className="relative h-64 bg-gradient-to-b from-primary/20 to-background">
+      <div className="relative h-80 bg-gradient-to-b from-primary/20 to-background overflow-hidden">
         <img
           src={restaurant1}
           alt="Burger House"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        
+        {/* Overlay pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(4,76,244,0.1),transparent_50%)]" />
         
         {/* Botão voltar */}
         <Button
           variant="secondary"
           size="icon"
-          className="absolute top-4 left-4 rounded-full shadow-lg"
+          className="absolute top-6 left-6 rounded-full shadow-lg hover:shadow-xl backdrop-blur-sm bg-white/90 dark:bg-black/50"
           onClick={() => navigate("/")}
         >
           <ArrowLeft className="h-5 w-5" />
@@ -86,51 +89,62 @@ const Restaurant = () => {
         <Button
           variant="secondary"
           size="icon"
-          className="absolute top-4 right-4 rounded-full shadow-lg"
+          className="absolute top-6 right-6 rounded-full shadow-lg hover:shadow-xl backdrop-blur-sm bg-white/90 dark:bg-black/50"
         >
           <Heart className="h-5 w-5" />
         </Button>
       </div>
 
-      <div className="container mx-auto px-4 -mt-12 relative z-10">
+      <div className="container mx-auto px-4 -mt-20 relative z-10 pb-32">
         {/* Card de informações do restaurante */}
-        <div className="bg-card rounded-2xl shadow-elegant p-6 mb-6 border border-border">
-          <div className="flex items-start justify-between mb-4">
+        <div className="bg-gradient-card rounded-3xl shadow-card-hover p-8 mb-8 border border-border backdrop-blur-sm">
+          <div className="flex items-start justify-between mb-6">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-foreground mb-2">Burger House</h1>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold text-foreground">4.8</span>
-                  <span>(500+ avaliações)</span>
+              <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-3">
+                Burger House
+              </h1>
+              <div className="flex items-center gap-6 text-sm mb-4">
+                <div className="flex items-center gap-2 bg-yellow-400/10 px-3 py-1.5 rounded-full">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <span className="font-bold text-foreground text-base">4.8</span>
+                  <span className="text-muted-foreground">(500+)</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  <span>25-35 min</span>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    <Clock className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium">25-35 min</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-                <span>Hamburgueria • Fast Food</span>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="h-5 w-5 text-primary" />
+                <span className="font-medium">Hamburgueria • Fast Food</span>
               </div>
             </div>
           </div>
 
-          <div className="flex gap-2 flex-wrap">
-            <Badge variant="secondary">Entrega Grátis</Badge>
-            <Badge variant="secondary">Cupons Disponíveis</Badge>
-            <Badge variant="secondary">Aceita Vale</Badge>
+          <div className="flex gap-3 flex-wrap">
+            <Badge className="bg-gradient-primary text-white border-0 shadow-sm px-4 py-1.5">
+              🎉 Entrega Grátis
+            </Badge>
+            <Badge variant="secondary" className="px-4 py-1.5 shadow-sm">
+              💰 Cupons Disponíveis
+            </Badge>
+            <Badge variant="secondary" className="px-4 py-1.5 shadow-sm">
+              ✓ Aceita Vale
+            </Badge>
           </div>
         </div>
 
         {/* Menu de categorias */}
-        <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm py-4 mb-6 border-b border-border">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl py-6 mb-8 border-b border-border shadow-sm">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {categories.map((category) => (
               <Button
                 key={category}
-                variant={category === "Mais Pedidos" ? "default" : "outline"}
-                className="whitespace-nowrap"
+                variant={category === "Mais Pedidos" ? "hero" : "outline"}
+                size="lg"
+                className="whitespace-nowrap shadow-sm hover:shadow-md transition-all"
               >
                 {category}
               </Button>
@@ -139,9 +153,12 @@ const Restaurant = () => {
         </div>
 
         {/* Lista de itens do menu */}
-        <div className="pb-24">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Mais Pedidos</h2>
-          <div className="grid gap-4">
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-1 w-12 bg-gradient-primary rounded-full"></div>
+            <h2 className="text-3xl font-bold text-foreground">Mais Pedidos</h2>
+          </div>
+          <div className="grid gap-6">
             {menuItems.map((item) => (
               <MenuItem key={item.id} {...item} />
             ))}
@@ -150,11 +167,12 @@ const Restaurant = () => {
       </div>
 
       {/* Carrinho fixo no rodapé */}
-      <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 shadow-elegant z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-card border-t border-border p-6 shadow-elegant z-30 backdrop-blur-xl">
         <div className="container mx-auto">
-          <Button size="xl" className="w-full" variant="hero">
-            <ShoppingCart className="h-5 w-5" />
-            Ver Carrinho • R$ 0,00
+          <Button size="xl" className="w-full shadow-glow hover:shadow-xl transition-all" variant="hero">
+            <ShoppingCart className="h-6 w-6" />
+            <span className="text-lg font-bold">Ver Carrinho</span>
+            <span className="ml-auto text-lg font-bold">R$ 0,00</span>
           </Button>
         </div>
       </div>
