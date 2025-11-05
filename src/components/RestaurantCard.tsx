@@ -1,6 +1,7 @@
 import { Star, Clock, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface RestaurantCardProps {
   name: string;
@@ -19,8 +20,13 @@ const RestaurantCard = ({
   category,
   priceRange,
 }: RestaurantCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className="group cursor-pointer overflow-hidden border-border transition-all hover:shadow-lg hover:scale-[1.02]">
+    <Card 
+      className="group cursor-pointer overflow-hidden border-border transition-all hover:shadow-lg hover:scale-[1.02]"
+      onClick={() => navigate("/restaurant/1")}
+    >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img
           src={image}
