@@ -1,15 +1,29 @@
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 
 interface MenuItemProps {
+  id: number;
   name: string;
   description: string;
   price: number;
   image: string;
 }
 
-const MenuItem = ({ name, description, price, image }: MenuItemProps) => {
+const MenuItem = ({ id, name, description, price, image }: MenuItemProps) => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addItem({ id, name, price, image });
+    toast({
+      title: "Item adicionado!",
+      description: `${name} foi adicionado ao carrinho.`,
+    });
+  };
+
   return (
     <Card className="group cursor-pointer overflow-hidden transition-all hover:shadow-card-hover hover:scale-[1.02] border-border bg-gradient-card">
       <div className="flex flex-col h-full">
@@ -27,6 +41,7 @@ const MenuItem = ({ name, description, price, image }: MenuItemProps) => {
             size="icon"
             variant="hero"
             className="absolute bottom-3 right-3 rounded-full shadow-glow h-12 w-12 hover:scale-110 transition-transform"
+            onClick={handleAddToCart}
           >
             <Plus className="h-6 w-6" />
           </Button>

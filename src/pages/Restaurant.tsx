@@ -1,12 +1,25 @@
-import { ArrowLeft, Star, Clock, MapPin, Heart, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Star, Clock, MapPin, ShoppingCart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import MenuItem from "@/components/MenuItem";
+import CartItem from "@/components/CartItem";
 import restaurant1 from "@/assets/restaurant-1.jpg";
 
 const Restaurant = () => {
   const navigate = useNavigate();
+  const { items, totalPrice, updateQuantity, removeItem, clearCart, totalItems } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
 
   const categories = ["Mais Pedidos", "Pratos Principais", "Acompanhamentos", "Bebidas", "Sobremesas"];
 
@@ -84,15 +97,6 @@ const Restaurant = () => {
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
-
-        {/* Botão favoritar */}
-        <Button
-          variant="secondary"
-          size="icon"
-          className="absolute top-6 right-6 rounded-full shadow-lg hover:shadow-xl backdrop-blur-sm bg-white/90 dark:bg-black/50"
-        >
-          <Heart className="h-5 w-5" />
-        </Button>
       </div>
 
       <div className="container mx-auto px-4 -mt-20 relative z-10 pb-32">
@@ -167,15 +171,103 @@ const Restaurant = () => {
       </div>
 
       {/* Carrinho fixo no rodapé */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-card border-t border-border p-6 shadow-elegant z-30 backdrop-blur-xl">
-        <div className="container mx-auto">
-          <Button size="xl" className="w-full shadow-glow hover:shadow-xl transition-all" variant="hero">
-            <ShoppingCart className="h-6 w-6" />
-            <span className="text-lg font-bold">Ver Carrinho</span>
-            <span className="ml-auto text-lg font-bold">R$ 0,00</span>
-          </Button>
+      {totalItems > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-card border-t border-border p-4 md:p-6 shadow-elegant z-30 backdrop-blur-xl">
+          <div className="container mx-auto">
+            <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+              <SheetTrigger asChild>
+                <Button size="xl" className="w-full shadow-glow hover:shadow-xl transition-all" variant="hero">
+                  <ShoppingCart className="h-6 w-6" />
+                  <span className="text-lg font-bold">Ver Carrinho ({totalItems})</span>
+                  <span className="ml-auto text-lg font-bold">
+                    R$ {totalPrice.toFixed(2).replace(".", ",")}
+                  </span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:max-w-lg p-0">
+                <div className="flex flex-col h-full">
+                  <SheetHeader className="p-6 border-b border-border bg-gradient-card">
+                    <SheetTitle className="text-2xl font-bold text-foreground">
+                      Seu Carrinho
+                    </SheetTitle>
+                  </SheetHeader>
+                  
+                  <div className="flex-1 overflow-y-auto p-6">
+                    {items.length === 0 ? (
+                      <div className="text-center py-12">
+                        <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                        <p className="text-lg font-semibold text-foreground mb-2">
+                          Seu carrinho está vazio
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Adicione itens para começar seu pedido
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        {items.map((item) => (
+                          <CartItem
+                            key={item.id}
+                            item={item}
+                            onUpdateQuantity={updateQuantity}
+                            onRemove={removeItem}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {items.length > 0 && (
+                    <div className="border-t border-border bg-gradient-card p-6 space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Subtotal</span>
+                          <span className="font-medium text-foreground">
+                            R$ {totalPrice.toFixed(2).replace(".", ",")}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Taxa de entrega</span>
+                          <span className="font-medium text-green-600">Grátis</span>
+                        </div>
+                        <div className="h-px bg-border my-3" />
+                        <div className="flex justify-between text-lg">
+                          <span className="font-bold text-foreground">Total</span>
+                          <span className="font-bold bg-gradient-primary bg-clip-text text-transparent">
+                            R$ {totalPrice.toFixed(2).replace(".", ",")}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Button 
+                          size="lg" 
+                          className="w-full shadow-glow" 
+                          variant="hero"
+                          onClick={() => {
+                            // Aqui você pode adicionar navegação para checkout
+                            console.log("Finalizar pedido");
+                          }}
+                        >
+                          Finalizar Pedido
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w-full"
+                          onClick={clearCart}
+                        >
+                          Limpar Carrinho
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
