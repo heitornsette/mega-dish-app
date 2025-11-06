@@ -2,7 +2,8 @@ import Header from "@/components/Header";
 import CategoryCard from "@/components/CategoryCard";
 import RestaurantCard from "@/components/RestaurantCard";
 import { Button } from "@/components/ui/button";
-import { Pizza, Sandwich, Coffee, Salad, IceCream, UtensilsCrossed } from "lucide-react";
+import { Pizza, Sandwich, Coffee, Salad, IceCream, UtensilsCrossed, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 import restaurant1 from "@/assets/restaurant-1.jpg";
 import restaurant2 from "@/assets/restaurant-2.jpg";
@@ -54,6 +55,8 @@ const restaurants = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -73,7 +76,12 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-3 min-[400px]:flex-row">
-                <Button variant="hero" size="xl" className="gap-2">
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  className="gap-2"
+                  onClick={() => navigate('/restaurants')}
+                >
                   <UtensilsCrossed className="h-5 w-5" />
                   Ver Restaurantes
                 </Button>
@@ -116,13 +124,23 @@ const Index = () => {
 
       {/* Popular Restaurants Section */}
       <section className="container px-4 md:px-6 py-12 md:py-16 bg-muted/30">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">
-            Restaurantes populares
-          </h2>
-          <p className="text-muted-foreground">
-            Os favoritos da sua região
-          </p>
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+              Restaurantes populares
+            </h2>
+            <p className="text-muted-foreground">
+              Os favoritos da sua região
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            className="gap-2 hidden sm:flex"
+            onClick={() => navigate('/restaurants')}
+          >
+            Ver todos
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {restaurants.map((restaurant) => (
@@ -137,6 +155,16 @@ const Index = () => {
             />
           ))}
         </div>
+        <div className="mt-8 text-center sm:hidden">
+          <Button 
+            variant="outline" 
+            className="gap-2 w-full"
+            onClick={() => navigate('/restaurants')}
+          >
+            Ver todos os restaurantes
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </section>
 
       {/* CTA Section */}
@@ -148,7 +176,12 @@ const Index = () => {
           <p className="text-lg text-muted-foreground">
             Milhares de restaurantes esperando para preparar sua refeição favorita
           </p>
-          <Button variant="hero" size="xl" className="gap-2">
+          <Button 
+            variant="hero" 
+            size="xl" 
+            className="gap-2"
+            onClick={() => navigate('/restaurants')}
+          >
             <UtensilsCrossed className="h-5 w-5" />
             Começar agora
           </Button>
