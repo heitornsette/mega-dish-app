@@ -1,12 +1,45 @@
-import { Search, ShoppingCart, MapPin } from "lucide-react";
+import { Search, ShoppingCart, MapPin, LogIn, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Erro ao sair");
+    } else {
+      toast.success("Você saiu da conta");
+      navigate("/");
+    }
+  };
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,6 +72,32 @@ const Header = () => {
             <MapPin className="h-4 w-4" />
             <span>São Paulo, SP</span>
           </Button>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-2 bg-primary hover:bg-primary/90">
+                  <User className="h-4 w-4" />
+                  <span className="hidden md:inline">Conta</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button 
+              className="gap-2 bg-primary hover:bg-primary/90"
+              onClick={() => navigate("/auth")}
+            >
+              <LogIn className="h-4 w-4" />
+              <span className="hidden md:inline">Login</span>
+            </Button>
+          )}
+
           <Button size="icon" variant="ghost" className="relative">
             <ShoppingCart className="h-5 w-5" />
             {totalItems > 0 && (
